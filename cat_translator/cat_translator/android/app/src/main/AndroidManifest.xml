@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:label="냥냥이톡"
+        android:label="멍멍이톡"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -27,9 +27,12 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- Google AdMob 실 서비스용 App ID -->
+        <!-- TODO: 멍멍이톡 전용 AdMob App ID로 교체할 것. 냥냥이톡의 실 App ID를
+             재사용하면 광고 수익/통계가 잘못된 앱으로 잡히는 문제가 생긴다
+             (이번 세션에서 실제로 겪은 문제이므로 다시 반복하지 않는다).
+             지금은 Google 공식 테스트 App ID(임시)를 사용한다. -->
         <meta-data
-                android:name="com.google.android.gms.ads.APPLICATION_ID"
-                android:value="ca-app-pub-9409942745407951~3777321768" />
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
     </application>
 </manifest>

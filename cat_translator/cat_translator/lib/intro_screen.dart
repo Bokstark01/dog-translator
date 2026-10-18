@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'cat_name_screen.dart';
 
 /// 앱 시작 시 채팅 화면으로 넘어가기 전에 보여주는 인트로 애니메이션.
-/// 화면 중앙에 집사(사람)가 서 있고, 맞은편에서 고양이가 달려와
-/// 집사에게 말을 건 뒤 "냥냥이톡" 타이틀이 나타난다.
+/// 화면 중앙에 주인(사람)이 서 있고, 맞은편에서 강아지가 달려와
+/// 주인에게 말을 건 뒤 "멍멍이톡" 타이틀이 나타난다.
 ///
 /// 이모지 대신 직접 그린(CustomPainter) 벡터 캐릭터를 사용해서
 /// 해상도에 관계없이 또렷하고, 달리기/꼬리 흔들기/숨쉬기/눈 깜빡임 같은
@@ -22,8 +22,8 @@ class _IntroScreenState extends State<IntroScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _sceneIn;
-  late final Animation<double> _catRun;
-  late final Animation<double> _catLand;
+  late final Animation<double> _dogRun;
+  late final Animation<double> _dogLand;
   late final Animation<double> _bubbleIn;
   late final Animation<double> _titleIn;
 
@@ -36,18 +36,18 @@ class _IntroScreenState extends State<IntroScreen>
       duration: const Duration(milliseconds: 3400),
     );
 
-    // 0.00~0.10: 배경/집사가 부드럽게 페이드인.
+    // 0.00~0.10: 배경/주인이 부드럽게 페이드인.
     _sceneIn = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.0, 0.10, curve: Curves.easeOut),
     );
-    // 0.08~0.60: 고양이가 화면 오른쪽에서 집사 쪽으로 달려온다.
-    _catRun = CurvedAnimation(
+    // 0.08~0.60: 강아지가 화면 오른쪽에서 주인 쪽으로 달려온다.
+    _dogRun = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.08, 0.60, curve: Curves.easeInOutCubic),
     );
-    // 0.60~0.76: 도착한 고양이가 통통 튀며 착지(스쿼시&스트레치).
-    _catLand = CurvedAnimation(
+    // 0.60~0.76: 도착한 강아지가 통통 튀며 착지(스쿼시&스트레치).
+    _dogLand = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.60, 0.76, curve: Curves.easeOut),
     );
@@ -56,7 +56,7 @@ class _IntroScreenState extends State<IntroScreen>
       parent: _controller,
       curve: const Interval(0.74, 0.90, curve: Curves.elasticOut),
     );
-    // 0.88~1.0: "냥냥이톡" 타이틀 등장.
+    // 0.88~1.0: "멍멍이톡" 타이틀 등장.
     _titleIn = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.88, 1.0, curve: Curves.easeOutBack),
@@ -68,7 +68,7 @@ class _IntroScreenState extends State<IntroScreen>
         Future.delayed(const Duration(milliseconds: 750), () {
           if (!mounted) return;
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const CatNameScreen()),
+            MaterialPageRoute(builder: (_) => const DogNameScreen()),
           );
         });
       }
@@ -94,18 +94,18 @@ class _IntroScreenState extends State<IntroScreen>
           final t = _controller.value;
           final sceneOpacity = _sceneIn.value.clamp(0.0, 1.0);
 
-          // --- 고양이 달리기 ---
+          // --- 강아지 달리기 ---
           final isRunning = t < 0.60;
-          final runProgress = _catRun.value.clamp(0.0, 1.0);
+          final runProgress = _dogRun.value.clamp(0.0, 1.0);
           final startX = size.width + 80;
           final endX = size.width * 0.58;
-          final catX = startX - (startX - endX) * runProgress;
+          final dogX = startX - (startX - endX) * runProgress;
           final strideSpeed = 11.0;
           final legPhase = runProgress * math.pi * strideSpeed;
           final runBounce = isRunning ? math.sin(legPhase).abs() * 7 : 0.0;
 
           // --- 착지 스쿼시 & 스트레치 (한 번 눌렸다 퍼지는 펄스) ---
-          final landT = _catLand.value.clamp(0.0, 1.0);
+          final landT = _dogLand.value.clamp(0.0, 1.0);
           final squash = isRunning ? 0.0 : math.sin(landT * math.pi);
 
           // --- 꼬리는 처음부터 끝까지 살랑살랑 ---
@@ -115,12 +115,12 @@ class _IntroScreenState extends State<IntroScreen>
           final bubbleOpacity = _bubbleIn.value.clamp(0.0, 1.0);
           final titleOpacity = _titleIn.value.clamp(0.0, 1.0);
 
-          // --- 집사(사람) 숨쉬기 + 눈 깜빡임 ---
+          // --- 주인(사람) 숨쉬기 + 눈 깜빡임 ---
           final breathe = math.sin(t * math.pi * 2.4) * 3;
           final blink = (t > 0.24 && t < 0.29) || (t > 0.92 && t < 0.97);
 
-          final catScaleY = 1.0 - squash * 0.22;
-          final catScaleX = 1.0 + squash * 0.16;
+          final dogScaleY = 1.0 - squash * 0.22;
+          final dogScaleX = 1.0 + squash * 0.16;
 
           return Opacity(
             opacity: sceneOpacity,
@@ -128,13 +128,13 @@ class _IntroScreenState extends State<IntroScreen>
               children: [
                 _Background(size: size, groundY: groundY, progress: t),
 
-                // 집사 그림자
+                // 주인 그림자
                 Positioned(
                   left: size.width * 0.30 + 14,
                   top: groundY + 4,
                   child: _ShadowOval(width: 64, opacity: 0.16),
                 ),
-                // 집사(사람)
+                // 주인(사람)
                 Positioned(
                   left: size.width * 0.30,
                   top: groundY - 152 + breathe,
@@ -144,23 +144,23 @@ class _IntroScreenState extends State<IntroScreen>
                   ),
                 ),
 
-                // 고양이 그림자 (착지 시 살짝 커짐)
+                // 강아지 그림자 (착지 시 살짝 커짐)
                 Positioned(
-                  left: catX + 6,
+                  left: dogX + 6,
                   top: groundY + 28,
                   child: _ShadowOval(width: 54 + squash * 14, opacity: 0.18),
                 ),
-                // 고양이
+                // 강아지
                 Positioned(
-                  left: catX,
+                  left: dogX,
                   top: groundY - 58 - runBounce,
                   child: Transform.scale(
                     alignment: Alignment.bottomCenter,
-                    scaleX: catScaleX,
-                    scaleY: catScaleY,
+                    scaleX: dogScaleX,
+                    scaleY: dogScaleY,
                     child: CustomPaint(
                       size: const Size(78, 58),
-                      painter: _CatPainter(
+                      painter: _DogPainter(
                         legPhase: legPhase,
                         running: isRunning,
                         tailPhase: tailPhase,
@@ -179,14 +179,14 @@ class _IntroScreenState extends State<IntroScreen>
                     child: Transform.scale(
                       alignment: Alignment.bottomLeft,
                       scale: 0.6 + 0.4 * bubbleOpacity,
-                      child: const _SpeechBubble(text: '집사님! 저 왔어요냥~'),
+                      child: const _SpeechBubble(text: '주인님! 저 왔어요멍~'),
                     ),
                   ),
                 ),
 
-                // "냥냥이톡" 타이틀.
+                // "멍멍이톡" 타이틀.
                 Align(
-                  alignment: const Alignment(0, 0.32),
+                  alignment: const Alignment(0, 0.72),
                   child: Opacity(
                     opacity: titleOpacity,
                     child: Transform.scale(
@@ -390,7 +390,7 @@ class _TitleLockup extends StatelessWidget {
             Icon(Icons.pets, color: Color(0xFFFF9933), size: 22),
             SizedBox(width: 6),
             Text(
-              '냥냥이톡',
+              '멍멍이톡',
               style: TextStyle(
                 fontSize: 42,
                 fontWeight: FontWeight.w900,
@@ -410,7 +410,7 @@ class _TitleLockup extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '고양이의 마음을 들어보세요',
+          '강아지의 마음을 들어보세요',
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
@@ -422,7 +422,7 @@ class _TitleLockup extends StatelessWidget {
   }
 }
 
-/// 집사(사람) 캐릭터. 둥글둥글한 플랫 일러스트 스타일로 그려서
+/// 주인(사람) 캐릭터. 둥글둥글한 플랫 일러스트 스타일로 그려서
 /// 이모지보다 또렷하고 자연스럽게 보이도록 한다.
 class _PersonPainter extends CustomPainter {
   _PersonPainter({required this.blink});
@@ -617,10 +617,12 @@ class _PersonPainter extends CustomPainter {
       oldDelegate.blink != blink;
 }
 
-/// 고양이 캐릭터. 달릴 때는 다리가 교차로 움직이고 꼬리가 살랑거리며,
-/// 도착한 뒤에는(눈이 동그래지고) 반가운 표정을 짓는다.
-class _CatPainter extends CustomPainter {
-  _CatPainter({
+/// 강아지 캐릭터. 달릴 때는 다리가 교차로 움직이고 꼬리가 살랑거리며,
+/// 도착한 뒤에는(눈이 동그래지고) 반가운 표정을 짓는다. 쫑긋 선 삼각形
+/// 고양이 귀 대신 아래로 늘어진 둥근 귀, 길쭉한 주둥이와 까만 코,
+/// 살짝 내민 혀로 강아지다운 인상을 준다.
+class _DogPainter extends CustomPainter {
+  _DogPainter({
     required this.legPhase,
     required this.running,
     required this.tailPhase,
@@ -632,8 +634,8 @@ class _CatPainter extends CustomPainter {
   final double tailPhase;
   final bool excited;
 
-  static const _fur = Color(0xFFFFB84D);
-  static const _furShade = Color(0xFFF28C28);
+  static const _fur = Color(0xFFE2A765);
+  static const _furShade = Color(0xFFC98A49);
   static const _cream = Color(0xFFFFF3E0);
 
   @override
@@ -641,7 +643,7 @@ class _CatPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    // 고양이는 왼쪽(집사 방향)을 바라본다. 머리는 왼쪽 30% 지점.
+    // 강아지는 왼쪽(주인 방향)을 바라본다. 머리는 왼쪽 30% 지점.
     final bodyRect = Rect.fromLTWH(w * 0.18, h * 0.28, w * 0.62, h * 0.46);
 
     // --- 꼬리 (뒤쪽, 몸통보다 먼저 그려서 몸에 가려지게) ---
@@ -649,7 +651,7 @@ class _CatPainter extends CustomPainter {
     final tailBase = Offset(w * 0.78, h * 0.42);
     final tailPaint = Paint()
       ..color = _fur
-      ..strokeWidth = w * 0.11
+      ..strokeWidth = w * 0.12
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
     final tailEnd = Offset(
@@ -703,29 +705,30 @@ class _CatPainter extends CustomPainter {
     final headPaint = Paint()..color = _fur;
     canvas.drawCircle(headCenter, headR, headPaint);
 
-    // 귀 (쫑긋, 달릴 때 살짝 뒤로 눕고 도착 시 쫑긋 세움).
-    final earTilt = running ? 0.35 : 0.1;
-    _drawEar(canvas, headCenter, headR, -1, earTilt);
-    _drawEar(canvas, headCenter, headR, 1, earTilt);
+    // 귀 (아래로 늘어진 둥근 귀. 달릴 땐 더 크게 펄럭이고, 도착하면 가라앉는다).
+    final earFlap = running ? math.sin(legPhase * 0.5).abs() * 0.18 : 0.04;
+    _drawEar(canvas, headCenter, headR, -1, earFlap);
+    _drawEar(canvas, headCenter, headR, 1, earFlap);
 
-    // 주둥이(흰 부분).
+    // 주둥이(강아지답게 더 길쭉하게 튀어나온 흰 부분).
     final muzzlePaint = Paint()..color = _cream;
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(headCenter.dx - headR * 0.35, headCenter.dy + headR * 0.25),
-          width: headR * 0.95,
-          height: headR * 0.65),
+          center: Offset(headCenter.dx - headR * 0.55, headCenter.dy + headR * 0.28),
+          width: headR * 1.05,
+          height: headR * 0.62),
       muzzlePaint,
     );
 
-    // 코.
-    final nosePaint = Paint()..color = const Color(0xFFE91E63);
-    final nosePath = Path()
-      ..moveTo(headCenter.dx - headR * 0.62, headCenter.dy + headR * 0.08)
-      ..lineTo(headCenter.dx - headR * 0.48, headCenter.dy + headR * 0.08)
-      ..lineTo(headCenter.dx - headR * 0.55, headCenter.dy + headR * 0.20)
-      ..close();
-    canvas.drawPath(nosePath, nosePaint);
+    // 코 (고양이의 분홍 삼각코 대신, 둥글고 까만 강아지 코).
+    final nosePaint = Paint()..color = const Color(0xFF2D1B0E);
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: Offset(headCenter.dx - headR * 0.95, headCenter.dy + headR * 0.22),
+          width: headR * 0.26,
+          height: headR * 0.20),
+      nosePaint,
+    );
 
     // 눈 (달릴 땐 기분 좋게 감은 호, 도착하면 반짝이는 동그란 눈).
     final eyeY = headCenter.dy - headR * 0.05;
@@ -769,41 +772,51 @@ class _CatPainter extends CustomPainter {
           happyPaint);
     }
 
-    // 수염.
-    final whiskerPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.85)
-      ..strokeWidth = 1.4
-      ..strokeCap = StrokeCap.round;
-    for (final dy in [-0.06, 0.0, 0.06]) {
-      canvas.drawLine(
-        Offset(headCenter.dx - headR * 0.75, headCenter.dy + headR * (0.15 + dy)),
-        Offset(headCenter.dx - headR * 1.25, headCenter.dy + headR * (0.05 + dy * 1.6)),
-        whiskerPaint,
-      );
-    }
+    // 살짝 내민 혀 (헥헥거리는 듯한 강아지다운 디테일).
+    final tonguePaint = Paint()..color = const Color(0xFFFF8FA3);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center:
+              Offset(headCenter.dx - headR * 0.60, headCenter.dy + headR * 0.55),
+          width: headR * 0.20,
+          height: headR * 0.32,
+        ),
+        const Radius.circular(6),
+      ),
+      tonguePaint,
+    );
   }
 
-  void _drawEar(Canvas canvas, Offset headCenter, double headR, int side, double tilt) {
-    final outerPaint = Paint()..color = _fur;
+  void _drawEar(Canvas canvas, Offset headCenter, double headR, int side, double flap) {
+    // 삼각형으로 쫑긋 선 고양이 귀 대신, 옆으로 축 늘어진 둥근 강아지 귀.
+    final outerPaint = Paint()..color = _furShade;
     final innerPaint = Paint()..color = const Color(0xFFFFCBA4);
-    final baseX = headCenter.dx + side * headR * 0.45;
-    final baseY = headCenter.dy - headR * 0.75;
-    final tipX = baseX + side * headR * 0.25 - tilt * headR * side;
-    final tipY = baseY - headR * 0.55;
-    final outer = Path()
-      ..moveTo(baseX - headR * 0.22, baseY + headR * 0.15)
-      ..lineTo(tipX, tipY)
-      ..lineTo(baseX + headR * 0.22, baseY + headR * 0.15)
-      ..close();
-    canvas.drawPath(outer, outerPaint);
-    final inner = Path()
-      ..moveTo(baseX - headR * 0.10, baseY + headR * 0.08)
-      ..lineTo(tipX - side * headR * 0.03, tipY + headR * 0.12)
-      ..lineTo(baseX + headR * 0.10, baseY + headR * 0.08)
-      ..close();
-    canvas.drawPath(inner, innerPaint);
+    final attachX = headCenter.dx + side * headR * 0.70;
+    final attachY = headCenter.dy - headR * 0.30;
+    final earCenter = Offset(
+      attachX + side * headR * 0.04,
+      attachY + headR * (0.55 + flap),
+    );
+    final earWidth = headR * 0.46;
+    final earHeight = headR * (0.95 + flap * 0.6);
+
+    canvas.save();
+    canvas.translate(earCenter.dx, earCenter.dy);
+    canvas.rotate(side * 0.18);
+    canvas.translate(-earCenter.dx, -earCenter.dy);
+    canvas.drawOval(
+      Rect.fromCenter(center: earCenter, width: earWidth, height: earHeight),
+      outerPaint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: earCenter, width: earWidth * 0.55, height: earHeight * 0.6),
+      innerPaint,
+    );
+    canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant _CatPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _DogPainter oldDelegate) => true;
 }

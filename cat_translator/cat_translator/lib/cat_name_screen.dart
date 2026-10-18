@@ -4,6 +4,9 @@ import 'main.dart';
 
 /// 인트로 애니메이션 다음에 보여주는 화면.
 /// 사용자에게 강아지 이름을 입력받아 채팅방 전체에서 그 이름으로 부른다.
+///
+/// 색상/톤은 "시안 A · 선샤인 허니" 디자인 시안을 따른다.
+/// 메인 허니옐로우(#FFB648)·포인트 코랄(#FF8B6B)·크림 배경(#FFF6E3→#FFE9D2).
 class DogNameScreen extends StatefulWidget {
   const DogNameScreen({super.key});
 
@@ -32,70 +35,157 @@ class _DogNameScreenState extends State<DogNameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF3E0),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('🐶', style: TextStyle(fontSize: 72)),
-              const SizedBox(height: 20),
-              const Text(
-                '우리 강아지 이름이 뭔가요?',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                '채팅방에서 이 이름으로 불러드릴게요',
-                style: TextStyle(fontSize: 13, color: Colors.black54),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 28),
-              TextField(
-                controller: _controller,
-                textAlign: TextAlign.center,
-                autofocus: true,
-                onSubmitted: (_) => _start(),
-                decoration: InputDecoration(
-                  hintText: '예: 초코',
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 14),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFFF6E3), Color(0xFFFFE9D2)],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 96,
+                  height: 96,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFFFD9A0), Color(0xFFFFC988)],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFFB648).withValues(alpha: 0.35),
+                        blurRadius: 18,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
+                  child: const Text('🐶', style: TextStyle(fontSize: 48)),
                 ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF9933),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                const SizedBox(height: 24),
+                const Text(
+                  '우리 강아지 이름이 뭔가요?',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF4A3524),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '채팅방에서 이 이름으로 불러드릴게요',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF9A8268).withValues(alpha: 0.9),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _controller,
+                    textAlign: TextAlign.center,
+                    autofocus: true,
+                    onSubmitted: (_) => _start(),
+                    style: const TextStyle(
+                      color: Color(0xFF4A3524),
+                      fontWeight: FontWeight.w600,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: '예: 초코',
+                      hintStyle: TextStyle(
+                        color: const Color(0xFF9A8268).withValues(alpha: 0.6),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        borderSide: const BorderSide(
+                          color: Color(0xFFFFB648),
+                          width: 1.6,
+                        ),
+                      ),
                     ),
                   ),
-                  onPressed: _start,
-                  child: const Text(
-                    '시작하기',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(18),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: _start,
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFFFB648), Color(0xFFFF8B6B)],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  const Color(0xFFFF8B6B).withValues(alpha: 0.35),
+                              blurRadius: 14,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text(
+                            '시작하기',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              TextButton(
-                onPressed: _start,
-                child: const Text(
-                  '나중에 정할게요',
-                  style: TextStyle(color: Colors.black45),
+                const SizedBox(height: 4),
+                TextButton(
+                  onPressed: _start,
+                  child: Text(
+                    '나중에 정할게요',
+                    style: TextStyle(
+                      color: const Color(0xFF9A8268).withValues(alpha: 0.85),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

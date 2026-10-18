@@ -19,7 +19,7 @@ import 'intro_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
-  runApp(const CatTranslatorApp());
+  runApp(const DogTranslatorApp());
 }
 
 /// 한국어 주격 조사 "이/가"를 이름의 받침 유무에 따라 올바르게 붙여준다.
@@ -31,9 +31,9 @@ String withSubjectParticle(String name) {
   const hangulEnd = 0xD7A3; // '힣'
   if (lastChar >= hangulBase && lastChar <= hangulEnd) {
     final hasBatchim = (lastChar - hangulBase) % 28 != 0;
-    return hasBatchim ? '$name이' : '$name가';
+    return hasBatchim ? '${name}이' : '${name}가';
   }
-  return '$name가';
+  return '${name}가';
 }
 
 /// 한국어 보조사 "은/는"을 이름의 받침 유무에 따라 올바르게 붙여준다.
@@ -45,18 +45,18 @@ String withTopicParticle(String name) {
   const hangulEnd = 0xD7A3; // '힣'
   if (lastChar >= hangulBase && lastChar <= hangulEnd) {
     final hasBatchim = (lastChar - hangulBase) % 28 != 0;
-    return hasBatchim ? '$name은' : '$name는';
+    return hasBatchim ? '${name}은' : '${name}는';
   }
-  return '$name는';
+  return '${name}는';
 }
 
-class CatTranslatorApp extends StatelessWidget {
-  const CatTranslatorApp({super.key});
+class DogTranslatorApp extends StatelessWidget {
+  const DogTranslatorApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '냥냥이톡',
+      title: '멍멍이톡',
       theme: ThemeData(
         colorSchemeSeed: const Color(0xFFFF9933),
         useMaterial3: true,
@@ -66,22 +66,22 @@ class CatTranslatorApp extends StatelessWidget {
   }
 }
 
-/// 채팅방 안의 한 줄: 고양이가 보낸 "말풍선" 메시지이거나,
+/// 채팅방 안의 한 줄: 반려견이 보낸 "말풍선" 메시지이거나,
 /// 가운데 작게 뜨는 "시스템 알림" 메시지.
 class ChatEntry {
   final bool isSystem;
-  // 사용자가 "말 걸기"로 고양이에게 신호음을 들려준 메시지인 경우.
+  // 사용자가 "말 걸기"로 반려견에게 신호음을 들려준 메시지인 경우.
   final bool isUser;
-  final CatSituation? situation;
-  final CatCue? cue;
+  final DogSituation? situation;
+  final DogCue? cue;
   final double confidence;
   final DateTime time;
   final String? systemText;
   // "아니에요" 선택 시 보여줄, 실제 상태일 확률이 높은 대안 후보 (상위 3개).
-  final List<CatSituation> alternatives;
+  final List<DogSituation> alternatives;
   bool? feedbackCorrect; // null = 아직 답 안 함
   // "아니에요"를 고른 뒤 사용자가 직접 골라준 실제 상태.
-  CatSituation? correctedSituation;
+  DogSituation? correctedSituation;
   // "아니에요" 고른 뒤 "사람이 흉내낸 소리였어요"를 선택한 경우.
   bool isHumanMimicry = false;
 
@@ -97,7 +97,7 @@ class ChatEntry {
         feedbackCorrect = null,
         correctedSituation = null;
 
-  ChatEntry.cat(CatSituation situation, double confidence,
+  ChatEntry.dog(DogSituation situation, double confidence,
       {this.alternatives = const []})
       : isSystem = false,
         isUser = false,
@@ -109,7 +109,7 @@ class ChatEntry {
         feedbackCorrect = null,
         correctedSituation = null;
 
-  ChatEntry.user(CatCue cue)
+  ChatEntry.user(DogCue cue)
       : isSystem = false,
         isUser = true,
         situation = null,
@@ -121,11 +121,12 @@ class ChatEntry {
         feedbackCorrect = null,
         correctedSituation = null;
 }
-class ChatHomePage extends StatefulWidget {
-  const ChatHomePage({super.key, this.catName = '냥냥이'});
 
-  /// 사용자가 인트로 다음 화면에서 입력한 고양이 이름.
-  final String catName;
+class ChatHomePage extends StatefulWidget {
+  const ChatHomePage({super.key, this.dogName = '멍멍이'});
+
+  /// 사용자가 인트로 다음 화면에서 입력한 반려견 이름.
+  final String dogName;
 
   @override
   State<ChatHomePage> createState() => _ChatHomePageState();
@@ -148,24 +149,27 @@ class _ChatHomePageState extends State<ChatHomePage> {
   bool _modelReady = false;
   String _headerStatus = '준비 중...';
   DateTime? _lastSpokenAt;
-  CatSituation? _lastSpokenSituation;
+  DogSituation? _lastSpokenSituation;
   final List<DateTime> _recentDetectionTimes = [];
-  int _consecutiveCatStreak = 0;
-  DateTime? _lastCatWindowAt;
+  int _consecutiveDogStreak = 0;
+  DateTime? _lastDogWindowAt;
 
   final List<ChatEntry> _messages = [];
 
   // 화면 하단 배너 광고 (실 서비스용 광고 단위 ID 사용).
   BannerAd? _bannerAd;
   bool _isBannerReady = false;
+  // TODO: 멍멍이톡 전용 AdMob 배너 ID로 교체할 것. 냥냥이톡/냥's 키친의 ID를
+  // 재사용하면 광고 수익/통계가 잘못된 앱으로 잡히는 문제가 생긴다
+  // (이번 세션에서 실제로 겪은 문제이므로 다시 반복하지 않는다).
   static const String _bannerAdUnitId =
-      'ca-app-pub-9409942745407951/5953812982';
+      'ca-app-pub-3940256099942544/6300978111'; // Google 공식 테스트 배너 ID (임시)
 
   @override
   void initState() {
     super.initState();
     _messages.add(
-      ChatEntry.system('${withSubjectParticle(widget.catName)} 채팅방에 들어왔어요 🐾'),
+      ChatEntry.system('${withSubjectParticle(widget.dogName)} 채팅방에 들어왔어요 🐾'),
     );
     _init();
     _loadBannerAd();
@@ -221,6 +225,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
       );
     });
   }
+
   Future<void> _toggleListening() async {
     if (_isListening) {
       await _stopListening();
@@ -290,11 +295,11 @@ class _ChatHomePageState extends State<ChatHomePage> {
 
   void _processWindow(List<double> waveform) {
     final scores = _classifier.classify(waveform);
-    final catResult = pickCatSubLabel(
+    final dogResult = pickDogSubLabel(
         scores, _classifier.labels, waveform, _sampleRate);
 
-    if (!catResult.isCatSound) {
-      _consecutiveCatStreak = 0;
+    if (!dogResult.isDogSound) {
+      _consecutiveDogStreak = 0;
       return;
     }
 
@@ -303,31 +308,31 @@ class _ChatHomePageState extends State<ChatHomePage> {
     _recentDetectionTimes.removeWhere(
         (t) => now.difference(t) > const Duration(seconds: 6));
 
-    if (_lastCatWindowAt != null &&
-        now.difference(_lastCatWindowAt!) <=
+    if (_lastDogWindowAt != null &&
+        now.difference(_lastDogWindowAt!) <=
             const Duration(milliseconds: 1500)) {
-      _consecutiveCatStreak += 1;
+      _consecutiveDogStreak += 1;
     } else {
-      _consecutiveCatStreak = 1;
+      _consecutiveDogStreak = 1;
     }
-    _lastCatWindowAt = now;
+    _lastDogWindowAt = now;
 
     final features = AudioFeatures(
       rms: _featureExtractor.rms(waveform),
       pitchHz: _featureExtractor.approxPitchHz(waveform),
-      durationMs: (_consecutiveCatStreak * 1000).toDouble(),
+      durationMs: (_consecutiveDogStreak * 1000).toDouble(),
       repetitionCount: _recentDetectionTimes.length,
       hourOfDay: now.hour,
     );
 
-    final situation = mapToSituation(catResult.subLabel, features);
+    final situation = mapToSituation(dogResult.subLabel, features);
     final alternatives =
-        topAlternativeSituations(catResult.subLabel, features, situation);
-    _maybeSpeak(situation, catResult.confidence, alternatives);
+        topAlternativeSituations(dogResult.subLabel, features, situation);
+    _maybeSpeak(situation, dogResult.confidence, alternatives);
   }
 
   void _maybeSpeak(
-      CatSituation situation, double confidence, List<CatSituation> alternatives) {
+      DogSituation situation, double confidence, List<DogSituation> alternatives) {
     final now = DateTime.now();
     final sameAsLast = situation == _lastSpokenSituation;
     final cooledDown = _lastSpokenAt == null ||
@@ -341,13 +346,14 @@ class _ChatHomePageState extends State<ChatHomePage> {
 
     setState(() {
       _messages.add(
-          ChatEntry.cat(situation, confidence, alternatives: alternatives));
+          ChatEntry.dog(situation, confidence, alternatives: alternatives));
     });
     _scrollToBottom();
 
     final phrase = kSituationInfo[situation]!.spokenPhrase;
     _tts.speak(phrase);
   }
+
   Future<void> _giveFeedback(ChatEntry entry, bool correct) async {
     if (entry.situation == null) return;
     if (correct) {
@@ -362,7 +368,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
 
   /// "아니에요" 선택 후, 사용자가 실제 상태를 골라준 경우의 처리.
   Future<void> _applyCorrection(
-      ChatEntry entry, CatSituation chosen) async {
+      ChatEntry entry, DogSituation chosen) async {
     if (entry.situation == null) return;
     await _feedbackStore.add(
         FeedbackEntry(DateTime.now(), entry.situation!, false, chosen));
@@ -373,7 +379,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
   }
 
   /// "아니에요" 선택 후, 사실은 사람이 흉내낸 소리였다고 알려준 경우.
-  /// (진짜 고양이 상황이 아니므로 correctedSituation은 비워두고
+  /// (진짜 반려견 상황이 아니므로 correctedSituation은 비워두고
   /// isHumanMimicry만 표시한다. 이 피드백은 추후 사람 목소리 판별
   /// 임계값을 보정하는 데 쓸 데이터로 저장된다.)
   Future<void> _markAsHumanMimicry(ChatEntry entry) async {
@@ -389,12 +395,12 @@ class _ChatHomePageState extends State<ChatHomePage> {
   /// 상위 3개 선택지에 정답이 없을 때, 12가지 상황 전체 중에서
   /// 직접 골라볼 수 있는 목록을 바텀시트로 보여준다.
   Future<void> _showFullSituationPicker(ChatEntry entry) async {
-    final chosen = await showModalBottomSheet<CatSituation>(
+    final chosen = await showModalBottomSheet<DogSituation>(
       context: context,
       showDragHandle: true,
       builder: (ctx) {
-        final others = CatSituation.values
-            .where((s) => s != entry.situation && s != CatSituation.unknown)
+        final others = DogSituation.values
+            .where((s) => s != entry.situation && s != DogSituation.unknown)
             .toList();
         return SafeArea(
           child: Padding(
@@ -404,7 +410,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${withTopicParticle(widget.catName)} 지금 어떤 상태인가요?',
+                  '${withTopicParticle(widget.dogName)} 지금 어떤 상태인가요?',
                   style: const TextStyle(
                       fontSize: 15, fontWeight: FontWeight.bold),
                 ),
@@ -442,11 +448,12 @@ class _ChatHomePageState extends State<ChatHomePage> {
       await _applyCorrection(entry, chosen);
     }
   }
+
   Future<void> _confirmExit() async {
     final shouldExit = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('냥냥이톡 나가기'),
+        title: const Text('멍멍이톡 나가기'),
         content: const Text('채팅방을 나가고 앱을 종료할까요?'),
         actions: [
           TextButton(
@@ -486,11 +493,11 @@ class _ChatHomePageState extends State<ChatHomePage> {
   }
 
   /// "말 걸기" 바텀시트에서 의도 하나를 고르면, 그에 맞는 합성 신호음을
-  /// 재생하고 채팅방에 "나 -> 고양이" 메시지로 남긴다.
-  Future<void> _sendCatCue(CatCue cue) async {
+  /// 재생하고 채팅방에 "나 -> 반려견" 메시지로 남긴다.
+  Future<void> _sendDogCue(DogCue cue) async {
     try {
       await _cuePlayer.stop();
-      await _cuePlayer.play(AssetSource(kCatCueInfo[cue]!.assetPath));
+      await _cuePlayer.play(AssetSource(kDogCueInfo[cue]!.assetPath));
     } catch (e) {
       _addSystemMessage('소리를 재생하지 못했어요: $e');
     }
@@ -501,8 +508,8 @@ class _ChatHomePageState extends State<ChatHomePage> {
     _scrollToBottom();
   }
 
-  Future<void> _showCatCuePicker() async {
-    final chosen = await showModalBottomSheet<CatCue>(
+  Future<void> _showDogCuePicker() async {
+    final chosen = await showModalBottomSheet<DogCue>(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
@@ -523,7 +530,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    '실제 고양이 언어로 "번역"하는 기능은 아니에요. 주의를 끌거나\n'
+                    '실제 반려견 언어로 "번역"하는 기능은 아니에요. 주의를 끌거나\n'
                     '편안하게 해주는 데 도움이 될 수 있다고 알려진 소리예요 🐾',
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),
@@ -532,7 +539,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
                     spacing: 10,
                     runSpacing: 10,
                     children: [
-                      for (final cue in CatCue.values)
+                      for (final cue in DogCue.values)
                         _cueTile(ctx, cue),
                     ],
                   ),
@@ -544,12 +551,12 @@ class _ChatHomePageState extends State<ChatHomePage> {
       },
     );
     if (chosen != null) {
-      await _sendCatCue(chosen);
+      await _sendDogCue(chosen);
     }
   }
 
-  Widget _cueTile(BuildContext ctx, CatCue cue) {
-    final info = kCatCueInfo[cue]!;
+  Widget _cueTile(BuildContext ctx, DogCue cue) {
+    final info = kDogCueInfo[cue]!;
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: () => Navigator.of(ctx).pop(cue),
@@ -631,14 +638,14 @@ class _ChatHomePageState extends State<ChatHomePage> {
           const CircleAvatar(
             radius: 18,
             backgroundColor: Colors.white,
-            child: Text('🐱', style: TextStyle(fontSize: 20)),
+            child: Text('🐶', style: TextStyle(fontSize: 20)),
           ),
           const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('냥냥이톡',
+              const Text('멍멍이톡',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Text(_headerStatus,
                   style: const TextStyle(fontSize: 12, color: Colors.black54)),
@@ -655,6 +662,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
       ],
     );
   }
+
   Widget _buildEntry(ChatEntry entry) {
     if (entry.isUser) {
       return _buildUserCueEntry(entry);
@@ -733,7 +741,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
                         ),
                         child: Text(
                           entry.isHumanMimicry
-                              ? '🧑 어? 사람 목소리였네요! 더 똑똑해질게요냥'
+                              ? '🧑 어? 사람 목소리였네요! 더 똑똑해질게요멍'
                               : '${info.emoji} ${info.spokenPhrase}',
                           style: const TextStyle(fontSize: 15, height: 1.3),
                         ),
@@ -754,9 +762,10 @@ class _ChatHomePageState extends State<ChatHomePage> {
       ),
     );
   }
-  /// 사용자가 "말 걸기"로 고양이에게 신호음을 보낸 메시지 (채팅방 오른쪽에 표시).
+
+  /// 사용자가 "말 걸기"로 반려견에게 신호음을 보낸 메시지 (채팅방 오른쪽에 표시).
   Widget _buildUserCueEntry(ChatEntry entry) {
-    final info = kCatCueInfo[entry.cue]!;
+    final info = kDogCueInfo[entry.cue]!;
     final timeLabel = _formatTime(entry.time);
 
     return Padding(
@@ -835,7 +844,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
     }
 
     // 3) 아니에요를 눌렀지만, 아직 실제 상태를 고르지 않은 경우
-    //    -> "지금 어떤 상태인가요?" 질문 + 확률 높은 상위 3개 선택지.
+    // -> "지금 어떤 상태인가요?" 질문 + 확률 높은 상위 3개 선택지.
     if (entry.correctedSituation == null && !entry.isHumanMimicry) {
       return Padding(
         padding: const EdgeInsets.only(left: 2, top: 2),
@@ -843,7 +852,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${withTopicParticle(widget.catName)} 지금 어떤 상태인가요?',
+              '${withTopicParticle(widget.dogName)} 지금 어떤 상태인가요?',
               style: const TextStyle(fontSize: 11, color: Colors.black54),
             ),
             const SizedBox(height: 4),
@@ -890,11 +899,12 @@ class _ChatHomePageState extends State<ChatHomePage> {
     return Padding(
       padding: const EdgeInsets.only(left: 4),
       child: Text(
-        '${kSituationInfo[entry.correctedSituation]!.koreanLabel}(으)로 알려주셨어요, 더 배울게요냥',
+        '${kSituationInfo[entry.correctedSituation]!.koreanLabel}(으)로 알려주셨어요, 더 배울게요멍',
         style: const TextStyle(fontSize: 11, color: Colors.black45),
       ),
     );
   }
+
   Widget _feedbackChip({
     required String label,
     required Color color,
@@ -929,7 +939,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
             Expanded(
               child: InkWell(
                 borderRadius: BorderRadius.circular(20),
-                onTap: _isListening ? null : _showCatCuePicker,
+                onTap: _isListening ? null : _showDogCuePicker,
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -942,9 +952,9 @@ class _ChatHomePageState extends State<ChatHomePage> {
                       Expanded(
                         child: Text(
                           _isListening
-                              ? '${widget.catName}의 소리를 듣고 있어요...'
+                              ? '${widget.dogName}의 소리를 듣고 있어요...'
                               : (_modelReady
-                                  ? '눌러서 고양이에게 소리 들려주기'
+                                  ? '눌러서 반려견에게 소리 들려주기'
                                   : '모델 준비 중...'),
                           style: const TextStyle(
                               color: Colors.black54, fontSize: 13),

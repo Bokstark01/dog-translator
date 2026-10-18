@@ -58,7 +58,7 @@ class DogTranslatorApp extends StatelessWidget {
     return MaterialApp(
       title: '멍멍이톡',
       theme: ThemeData(
-        colorSchemeSeed: const Color(0xFFFF9933),
+        colorSchemeSeed: const Color(0xFFFFB648),
         useMaterial3: true,
       ),
       home: const IntroScreen(),
@@ -564,7 +564,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
         width: 150,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF3E0),
+          color: const Color(0xFFFFF6E3),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFFFFD9A0)),
         ),
@@ -590,7 +590,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE9E3D8),
+      backgroundColor: const Color(0xFFFFE9D2),
       appBar: _buildChatAppBar(context),
       body: SafeArea(
         child: Column(
@@ -630,8 +630,17 @@ class _ChatHomePageState extends State<ChatHomePage> {
 
   PreferredSizeWidget _buildChatAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFFFFB84D),
-      elevation: 1,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFFFB648), Color(0xFFFF8B6B)],
+          ),
+        ),
+      ),
       titleSpacing: 8,
       title: Row(
         children: [
@@ -646,9 +655,12 @@ class _ChatHomePageState extends State<ChatHomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('멍멍이톡',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
               Text(_headerStatus,
-                  style: const TextStyle(fontSize: 12, color: Colors.black54)),
+                  style: const TextStyle(fontSize: 12, color: Colors.white70)),
             ],
           ),
         ],
@@ -656,7 +668,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
       actions: [
         IconButton(
           tooltip: '채팅방 나가기',
-          icon: const Icon(Icons.exit_to_app),
+          icon: const Icon(Icons.exit_to_app, color: Colors.white),
           onPressed: _confirmExit,
         ),
       ],
@@ -782,7 +794,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFB84D),
+                color: const Color(0xFFFF8B6B),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(4),
@@ -976,7 +988,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
               child: CircleAvatar(
                 radius: 24,
                 backgroundColor:
-                    _isListening ? Colors.redAccent : const Color(0xFFFFB84D),
+                    _isListening ? Colors.redAccent : const Color(0xFFFFB648),
                 child: Icon(
                   _isListening ? Icons.stop : Icons.mic,
                   color: Colors.white,

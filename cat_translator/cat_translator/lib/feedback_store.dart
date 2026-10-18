@@ -3,13 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'cat_situation.dart';
 
 /// 사용자가 "맞아요/아니에요"로 눌러준 피드백을 기기에 간단히 저장한다.
-/// (추후 2단계 로드맵: 이 기록을 모아 고양이별 개인화 모델 학습에 사용)
+/// (추후 2단계 로드맵: 이 기록을 모아 반려견별 개인화 모델 학습에 사용)
 class FeedbackEntry {
   final DateTime time;
-  final CatSituation predicted;
+  final DogSituation predicted;
   final bool wasCorrect;
   // "아니에요"를 고른 뒤 사용자가 직접 골라준 실제 상태 (정답).
-  final CatSituation? correctedSituation;
+  final DogSituation? correctedSituation;
   // "아니에요" -> "사람이 흉내낸 소리였어요"를 고른 경우 true.
   // (로드맵: 이런 오탐 사례를 모아 사람 목소리 판별 임계값을 보정하거나
   // 전용 분류기를 학습하는 데 사용할 예정.)
@@ -28,17 +28,17 @@ class FeedbackEntry {
 
   static FeedbackEntry fromJson(Map<String, dynamic> json) => FeedbackEntry(
         DateTime.parse(json['time'] as String),
-        CatSituation.values.byName(json['predicted'] as String),
+        DogSituation.values.byName(json['predicted'] as String),
         json['correct'] as bool,
         json['corrected'] != null
-            ? CatSituation.values.byName(json['corrected'] as String)
+            ? DogSituation.values.byName(json['corrected'] as String)
             : null,
         json['humanMimicry'] == true,
       );
 }
 
 class FeedbackStore {
-  static const _key = 'cat_feedback_log_v1';
+  static const _key = 'dog_feedback_log_v1';
 
   Future<void> add(FeedbackEntry entry) async {
     final prefs = await SharedPreferences.getInstance();

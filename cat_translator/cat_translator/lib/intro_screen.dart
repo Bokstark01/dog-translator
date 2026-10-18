@@ -11,6 +11,9 @@ import 'cat_name_screen.dart';
 /// 이모지 대신 직접 그린(CustomPainter) 벡터 캐릭터를 사용해서
 /// 해상도에 관계없이 또렷하고, 달리기/꼬리 흔들기/숨쉬기/눈 깜빡임 같은
 /// 자연스러운 움직임을 세밀하게 제어한다.
+///
+/// 색상/타이포는 "시안 A · 선샤인 허니" 디자인 시안을 따른다.
+/// 메인 허니옐로우(#FFB648)·포인트 코랄(#FF8B6B)·크림 배경(#FFF6E3→#FFE9D2).
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
 
@@ -51,7 +54,7 @@ class _IntroScreenState extends State<IntroScreen>
       parent: _controller,
       curve: const Interval(0.60, 0.76, curve: Curves.easeOut),
     );
-    // 0.74~0.90: 말풍선이 통통 튀듯 나타난다.
+    // 0.74~0.90: 말풍선이 스프링처럼 통통 튀며 나타난다.
     _bubbleIn = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.74, 0.90, curve: Curves.elasticOut),
@@ -87,7 +90,7 @@ class _IntroScreenState extends State<IntroScreen>
     final groundY = size.height * 0.42;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFE9CC),
+      backgroundColor: const Color(0xFFFFE9D2),
       body: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
@@ -224,11 +227,11 @@ class _Background extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFFFFF3E0), Color(0xFFFFE0B2)],
+              colors: [Color(0xFFFFF6E3), Color(0xFFFFE9D2)],
             ),
           ),
         ),
-        // 해.
+        // 해 (허니옐로우).
         Positioned(
           right: -30,
           top: 40,
@@ -237,7 +240,7 @@ class _Background extends StatelessWidget {
             height: 140,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFFFD180).withValues(alpha: 0.55),
+              color: const Color(0xFFFFB648).withValues(alpha: 0.55),
             ),
           ),
         ),
@@ -270,7 +273,8 @@ class _Background extends StatelessWidget {
             ),
           ),
         ),
-        // 발바닥 무늬 장식 (아주 옅게).
+        // 발바닥 무늬 장식 (아주 옅게, 커스텀 페인트 — 기본 Material 아이콘 대신
+        // 디자인 시안 톤에 맞춘 직접 그린 발바닥을 쓴다).
         Positioned(
           left: size.width * 0.14,
           top: groundY - 170,
@@ -278,7 +282,7 @@ class _Background extends StatelessWidget {
             opacity: 0.18,
             child: Transform.rotate(
               angle: -0.3,
-              child: const Icon(Icons.pets, size: 22, color: Color(0xFFFF9933)),
+              child: const _PawIcon(size: 22, color: Color(0xFFFFB648)),
             ),
           ),
         ),
@@ -289,7 +293,7 @@ class _Background extends StatelessWidget {
             opacity: 0.14,
             child: Transform.rotate(
               angle: -0.2,
-              child: const Icon(Icons.pets, size: 16, color: Color(0xFFFF9933)),
+              child: const _PawIcon(size: 16, color: Color(0xFFFFB648)),
             ),
           ),
         ),
@@ -350,7 +354,7 @@ class _SpeechBubble extends StatelessWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF6B4A2B),
+            color: Color(0xFF4A3524),
           ),
         ),
       ),
@@ -386,26 +390,32 @@ class _TitleLockup extends StatelessWidget {
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.pets, color: Color(0xFFFF9933), size: 22),
-            SizedBox(width: 6),
-            Text(
-              '멍멍이톡',
-              style: TextStyle(
-                fontSize: 42,
-                fontWeight: FontWeight.w900,
-                color: Color(0xFFFF9933),
-                shadows: [
-                  Shadow(
-                    color: Colors.black26,
-                    offset: Offset(0, 2),
-                    blurRadius: 4,
-                  ),
-                ],
+          children: [
+            const _PawIcon(size: 22, color: Color(0xFFFFB648)),
+            const SizedBox(width: 8),
+            ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [Color(0xFFFFB648), Color(0xFFFF8B6B)],
+              ).createShader(bounds),
+              child: const Text(
+                '멍멍이톡',
+                style: TextStyle(
+                  fontSize: 42,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black26,
+                      offset: Offset(0, 2),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
               ),
             ),
-            SizedBox(width: 6),
-            Icon(Icons.pets, color: Color(0xFFFF9933), size: 22),
+            const SizedBox(width: 8),
+            const _PawIcon(size: 22, color: Color(0xFFFFB648)),
           ],
         ),
         const SizedBox(height: 4),
@@ -414,12 +424,70 @@ class _TitleLockup extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF8A5A2B).withValues(alpha: 0.8),
+            color: const Color(0xFF9A8268).withValues(alpha: 0.9),
           ),
         ),
       ],
     );
   }
+}
+
+/// 디자인 시안 톤에 맞춘 커스텀 발바닥 아이콘.
+/// 기본 Material `Icons.pets`를 그대로 쓰지 않고 직접 그려서
+/// 다른 손그림 캐릭터들과 질감을 통일한다.
+class _PawIcon extends StatelessWidget {
+  const _PawIcon({required this.size, required this.color});
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(size, size),
+      painter: _PawPainter(color: color),
+    );
+  }
+}
+
+class _PawPainter extends CustomPainter {
+  _PawPainter({required this.color});
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
+    final w = size.width;
+    final h = size.height;
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: Offset(w * 0.5, h * 0.64), width: w * 0.62, height: h * 0.50),
+      paint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: Offset(w * 0.17, h * 0.36), width: w * 0.26, height: h * 0.32),
+      paint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: Offset(w * 0.39, h * 0.14), width: w * 0.24, height: h * 0.32),
+      paint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: Offset(w * 0.63, h * 0.14), width: w * 0.24, height: h * 0.32),
+      paint,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+          center: Offset(w * 0.85, h * 0.36), width: w * 0.26, height: h * 0.32),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _PawPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 /// 주인(사람) 캐릭터. 둥글둥글한 플랫 일러스트 스타일로 그려서
@@ -430,8 +498,8 @@ class _PersonPainter extends CustomPainter {
 
   static const _skin = Color(0xFFFFD9B3);
   static const _hair = Color(0xFF6B4A2B);
-  static const _sweater = Color(0xFFFF9933);
-  static const _sweaterShade = Color(0xFFE67E22);
+  static const _sweater = Color(0xFFFF8B6B);
+  static const _sweaterShade = Color(0xFFE8663F);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -560,11 +628,13 @@ class _PersonPainter extends CustomPainter {
     final blushPaint = Paint()
       ..color = const Color(0xFFFF8A80).withValues(alpha: 0.45);
     canvas.drawCircle(
-        Offset(faceCenter.dx - faceRadius * 0.55, faceCenter.dy + faceRadius * 0.15),
+        Offset(faceCenter.dx - faceRadius * 0.55,
+            faceCenter.dy + faceRadius * 0.15),
         faceRadius * 0.16,
         blushPaint);
     canvas.drawCircle(
-        Offset(faceCenter.dx + faceRadius * 0.55, faceCenter.dy + faceRadius * 0.15),
+        Offset(faceCenter.dx + faceRadius * 0.55,
+            faceCenter.dy + faceRadius * 0.15),
         faceRadius * 0.16,
         blushPaint);
 
@@ -602,7 +672,8 @@ class _PersonPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
     final mouthPath = Path()
-      ..moveTo(faceCenter.dx - faceRadius * 0.22, faceCenter.dy + faceRadius * 0.38)
+      ..moveTo(
+          faceCenter.dx - faceRadius * 0.22, faceCenter.dy + faceRadius * 0.38)
       ..quadraticBezierTo(
         faceCenter.dx,
         faceCenter.dy + faceRadius * 0.58,
@@ -618,7 +689,7 @@ class _PersonPainter extends CustomPainter {
 }
 
 /// 강아지 캐릭터. 달릴 때는 다리가 교차로 움직이고 꼬리가 살랑거리며,
-/// 도착한 뒤에는(눈이 동그래지고) 반가운 표정을 짓는다. 쫑긋 선 삼각形
+/// 도착한 뒤에는(눈이 동그래지고) 반가운 표정을 짓는다. 쫑긋 선 삼각형
 /// 고양이 귀 대신 아래로 늘어진 둥근 귀, 길쭉한 주둥이와 까만 코,
 /// 살짝 내민 혀로 강아지다운 인상을 준다.
 class _DogPainter extends CustomPainter {
@@ -714,7 +785,8 @@ class _DogPainter extends CustomPainter {
     final muzzlePaint = Paint()..color = _cream;
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(headCenter.dx - headR * 0.55, headCenter.dy + headR * 0.28),
+          center:
+              Offset(headCenter.dx - headR * 0.55, headCenter.dy + headR * 0.28),
           width: headR * 1.05,
           height: headR * 0.62),
       muzzlePaint,
@@ -724,7 +796,8 @@ class _DogPainter extends CustomPainter {
     final nosePaint = Paint()..color = const Color(0xFF2D1B0E);
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(headCenter.dx - headR * 0.95, headCenter.dy + headR * 0.22),
+          center:
+              Offset(headCenter.dx - headR * 0.95, headCenter.dy + headR * 0.22),
           width: headR * 0.26,
           height: headR * 0.20),
       nosePaint,
@@ -788,7 +861,8 @@ class _DogPainter extends CustomPainter {
     );
   }
 
-  void _drawEar(Canvas canvas, Offset headCenter, double headR, int side, double flap) {
+  void _drawEar(
+      Canvas canvas, Offset headCenter, double headR, int side, double flap) {
     // 삼각형으로 쫑긋 선 고양이 귀 대신, 옆으로 축 늘어진 둥근 강아지 귀.
     final outerPaint = Paint()..color = _furShade;
     final innerPaint = Paint()..color = const Color(0xFFFFCBA4);

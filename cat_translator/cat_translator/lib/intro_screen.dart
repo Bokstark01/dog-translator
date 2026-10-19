@@ -12,8 +12,8 @@ import 'cat_name_screen.dart';
 /// 해상도에 관계없이 또렷하고, 달리기/꼬리 흔들기/숨쉬기/눈 깜빡임 같은
 /// 자연스러운 움직임을 세밀하게 제어한다.
 ///
-/// 색상/타이포는 "시안 A · 선샤인 허니" 디자인 시안을 따른다.
-/// 메인 허니옐로우(#FFB648)·포인트 코랄(#FF8B6B)·크림 배경(#FFF6E3→#FFE9D2).
+/// 색상/타이포는 "피치 선셋" 디자인 시안을 따른다.
+/// 메인 코랄(#FF9A76)·포인트 골드(#FFD36B)·크림 배경(#FFF6E9→#FFE3C9).
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
 
@@ -22,7 +22,7 @@ class IntroScreen extends StatefulWidget {
 }
 
 class _IntroScreenState extends State<IntroScreen>
-    with SingleTickerProviderStateMixin {
+  with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _sceneIn;
   late final Animation<double> _dogRun;
@@ -37,33 +37,33 @@ class _IntroScreenState extends State<IntroScreen>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3400),
-    );
+      );
 
     // 0.00~0.10: 배경/주인이 부드럽게 페이드인.
     _sceneIn = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.0, 0.10, curve: Curves.easeOut),
-    );
+      );
     // 0.08~0.60: 강아지가 화면 오른쪽에서 주인 쪽으로 달려온다.
     _dogRun = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.08, 0.60, curve: Curves.easeInOutCubic),
-    );
+      );
     // 0.60~0.76: 도착한 강아지가 통통 튀며 착지(스쿼시&스트레치).
     _dogLand = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.60, 0.76, curve: Curves.easeOut),
-    );
+      );
     // 0.74~0.90: 말풍선이 스프링처럼 통통 튀며 나타난다.
     _bubbleIn = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.74, 0.90, curve: Curves.elasticOut),
-    );
+      );
     // 0.88~1.0: "멍멍이톡" 타이틀 등장.
     _titleIn = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.88, 1.0, curve: Curves.easeOutBack),
-    );
+      );
 
     _controller.forward();
     _controller.addStatusListener((status) {
@@ -72,7 +72,7 @@ class _IntroScreenState extends State<IntroScreen>
           if (!mounted) return;
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const DogNameScreen()),
-          );
+            );
         });
       }
     });
@@ -90,7 +90,7 @@ class _IntroScreenState extends State<IntroScreen>
     final groundY = size.height * 0.42;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFE9D2),
+      backgroundColor: const Color(0xFFFFE3C9),
       body: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
@@ -136,7 +136,7 @@ class _IntroScreenState extends State<IntroScreen>
                   left: size.width * 0.30 + 14,
                   top: groundY + 4,
                   child: _ShadowOval(width: 64, opacity: 0.16),
-                ),
+                  ),
                 // 주인(사람)
                 Positioned(
                   left: size.width * 0.30,
@@ -144,15 +144,15 @@ class _IntroScreenState extends State<IntroScreen>
                   child: CustomPaint(
                     size: const Size(96, 154),
                     painter: _PersonPainter(blink: blink),
+                    ),
                   ),
-                ),
 
                 // 강아지 그림자 (착지 시 살짝 커짐)
                 Positioned(
                   left: dogX + 6,
                   top: groundY + 28,
                   child: _ShadowOval(width: 54 + squash * 14, opacity: 0.18),
-                ),
+                  ),
                 // 강아지
                 Positioned(
                   left: dogX,
@@ -168,10 +168,10 @@ class _IntroScreenState extends State<IntroScreen>
                         running: isRunning,
                         tailPhase: tailPhase,
                         excited: !isRunning,
+                        ),
                       ),
                     ),
                   ),
-                ),
 
                 // 말풍선
                 Positioned(
@@ -183,9 +183,9 @@ class _IntroScreenState extends State<IntroScreen>
                       alignment: Alignment.bottomLeft,
                       scale: 0.6 + 0.4 * bubbleOpacity,
                       child: const _SpeechBubble(text: '주인님! 저 왔어요멍~'),
+                      ),
                     ),
                   ),
-                ),
 
                 // "멍멍이톡" 타이틀.
                 Align(
@@ -195,22 +195,22 @@ class _IntroScreenState extends State<IntroScreen>
                     child: Transform.scale(
                       scale: 0.85 + 0.15 * titleOpacity,
                       child: const _TitleLockup(),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
+                ],
+              ),
+            );
         },
-      ),
-    );
+        ),
+      );
   }
 }
 
 /// 은은한 그러데이션 하늘 + 해 + 구름 + 발바닥 무늬 장식 + 바닥선.
 class _Background extends StatelessWidget {
   const _Background(
-      {required this.size, required this.groundY, required this.progress});
+    {required this.size, required this.groundY, required this.progress});
 
   final Size size;
   final double groundY;
@@ -227,11 +227,11 @@ class _Background extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFFFFF6E3), Color(0xFFFFE9D2)],
+              colors: [Color(0xFFFFF6E9), Color(0xFFFFE3C9)],
+              ),
             ),
           ),
-        ),
-        // 해 (허니옐로우).
+        // 해 (골드).
         Positioned(
           right: -30,
           top: 40,
@@ -240,21 +240,21 @@ class _Background extends StatelessWidget {
             height: 140,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFFFFB648).withValues(alpha: 0.55),
+              color: const Color(0xFFFFD36B).withValues(alpha: 0.55),
+              ),
             ),
           ),
-        ),
         // 구름 두 개 (은은하게 떠다니는 느낌).
         Positioned(
           left: 24 + math.sin(progress * math.pi) * 6,
           top: 70,
           child: _cloud(0.5),
-        ),
+          ),
         Positioned(
           left: size.width * 0.55 + math.cos(progress * math.pi) * 8,
           top: 110,
           child: _cloud(0.35),
-        ),
+          ),
         // 바닥 그림자 선.
         Positioned(
           left: 0,
@@ -268,11 +268,11 @@ class _Background extends StatelessWidget {
                   Colors.black.withValues(alpha: 0.0),
                   Colors.black.withValues(alpha: 0.10),
                   Colors.black.withValues(alpha: 0.0),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         // 발바닥 무늬 장식 (아주 옅게, 커스텀 페인트 — 기본 Material 아이콘 대신
         // 디자인 시안 톤에 맞춘 직접 그린 발바닥을 쓴다).
         Positioned(
@@ -282,10 +282,10 @@ class _Background extends StatelessWidget {
             opacity: 0.18,
             child: Transform.rotate(
               angle: -0.3,
-              child: const _PawIcon(size: 22, color: Color(0xFFFFB648)),
+              child: const _PawIcon(size: 22, color: Color(0xFFFF9A76)),
+              ),
             ),
           ),
-        ),
         Positioned(
           left: size.width * 0.22,
           top: groundY - 140,
@@ -293,19 +293,19 @@ class _Background extends StatelessWidget {
             opacity: 0.14,
             child: Transform.rotate(
               angle: -0.2,
-              child: const _PawIcon(size: 16, color: Color(0xFFFFB648)),
+              child: const _PawIcon(size: 16, color: Color(0xFFFF9A76)),
+              ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
   }
 
   Widget _cloud(double opacity) {
     return Opacity(
       opacity: opacity,
       child: const Icon(Icons.cloud, size: 46, color: Colors.white),
-    );
+      );
   }
 }
 
@@ -322,8 +322,8 @@ class _ShadowOval extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: opacity),
         borderRadius: BorderRadius.circular(999),
-      ),
-    );
+        ),
+      );
   }
 }
 
@@ -346,19 +346,19 @@ class _SpeechBubble extends StatelessWidget {
               color: Colors.black26,
               blurRadius: 6,
               offset: Offset(0, 3),
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
         child: Text(
           text,
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w700,
             color: Color(0xFF4A3524),
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -391,13 +391,13 @@ class _TitleLockup extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const _PawIcon(size: 22, color: Color(0xFFFFB648)),
+            const _PawIcon(size: 22, color: Color(0xFFFF9A76)),
             const SizedBox(width: 8),
             ShaderMask(
               blendMode: BlendMode.srcIn,
               shaderCallback: (bounds) => const LinearGradient(
-                colors: [Color(0xFFFFB648), Color(0xFFFF8B6B)],
-              ).createShader(bounds),
+                colors: [Color(0xFFFF9A76), Color(0xFFFFD36B)],
+                ).createShader(bounds),
               child: const Text(
                 '멍멍이톡',
                 style: TextStyle(
@@ -409,15 +409,15 @@ class _TitleLockup extends StatelessWidget {
                       color: Colors.black26,
                       offset: Offset(0, 2),
                       blurRadius: 4,
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
             const SizedBox(width: 8),
-            const _PawIcon(size: 22, color: Color(0xFFFFB648)),
-          ],
-        ),
+            const _PawIcon(size: 22, color: Color(0xFFFF9A76)),
+            ],
+          ),
         const SizedBox(height: 4),
         Text(
           '강아지의 마음을 들어보세요',
@@ -425,10 +425,10 @@ class _TitleLockup extends StatelessWidget {
             fontSize: 13,
             fontWeight: FontWeight.w600,
             color: const Color(0xFF9A8268).withValues(alpha: 0.9),
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
   }
 }
 
@@ -445,7 +445,7 @@ class _PawIcon extends StatelessWidget {
     return CustomPaint(
       size: Size(size, size),
       painter: _PawPainter(color: color),
-    );
+      );
   }
 }
 
@@ -460,34 +460,34 @@ class _PawPainter extends CustomPainter {
     final h = size.height;
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(w * 0.5, h * 0.64), width: w * 0.62, height: h * 0.50),
+        center: Offset(w * 0.5, h * 0.64), width: w * 0.62, height: h * 0.50),
       paint,
-    );
+      );
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(w * 0.17, h * 0.36), width: w * 0.26, height: h * 0.32),
+        center: Offset(w * 0.17, h * 0.36), width: w * 0.26, height: h * 0.32),
       paint,
-    );
+      );
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(w * 0.39, h * 0.14), width: w * 0.24, height: h * 0.32),
+        center: Offset(w * 0.39, h * 0.14), width: w * 0.24, height: h * 0.32),
       paint,
-    );
+      );
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(w * 0.63, h * 0.14), width: w * 0.24, height: h * 0.32),
+        center: Offset(w * 0.63, h * 0.14), width: w * 0.24, height: h * 0.32),
       paint,
-    );
+      );
     canvas.drawOval(
       Rect.fromCenter(
-          center: Offset(w * 0.85, h * 0.36), width: w * 0.26, height: h * 0.32),
+        center: Offset(w * 0.85, h * 0.36), width: w * 0.26, height: h * 0.32),
       paint,
-    );
+      );
   }
 
   @override
   bool shouldRepaint(covariant _PawPainter oldDelegate) =>
-      oldDelegate.color != color;
+    oldDelegate.color != color;
 }
 
 /// 주인(사람) 캐릭터. 둥글둥글한 플랫 일러스트 스타일로 그려서
@@ -498,8 +498,8 @@ class _PersonPainter extends CustomPainter {
 
   static const _skin = Color(0xFFFFD9B3);
   static const _hair = Color(0xFF6B4A2B);
-  static const _sweater = Color(0xFFFF8B6B);
-  static const _sweaterShade = Color(0xFFE8663F);
+  static const _sweater = Color(0xFFFF9A76);
+  static const _sweaterShade = Color(0xFFDE7E58);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -510,43 +510,43 @@ class _PersonPainter extends CustomPainter {
     final shoePaint = Paint()..color = const Color(0xFF4A3524);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * 0.22, h * 0.90, w * 0.22, h * 0.10),
-          const Radius.circular(6)),
+        Rect.fromLTWH(w * 0.22, h * 0.90, w * 0.22, h * 0.10),
+        const Radius.circular(6)),
       shoePaint,
-    );
+      );
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * 0.56, h * 0.90, w * 0.22, h * 0.10),
-          const Radius.circular(6)),
+        Rect.fromLTWH(w * 0.56, h * 0.90, w * 0.22, h * 0.10),
+        const Radius.circular(6)),
       shoePaint,
-    );
+      );
 
     // 바지(살짝 보이는 부분).
     final pantsPaint = Paint()..color = const Color(0xFF7A6248);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * 0.20, h * 0.80, w * 0.24, h * 0.14),
-          const Radius.circular(8)),
+        Rect.fromLTWH(w * 0.20, h * 0.80, w * 0.24, h * 0.14),
+        const Radius.circular(8)),
       pantsPaint,
-    );
+      );
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * 0.56, h * 0.80, w * 0.24, h * 0.14),
-          const Radius.circular(8)),
+        Rect.fromLTWH(w * 0.56, h * 0.80, w * 0.24, h * 0.14),
+        const Radius.circular(8)),
       pantsPaint,
-    );
+      );
 
     // 몸통(스웨터) - 둥근 사다리꼴 느낌의 RRect.
     final bodyRect = Rect.fromLTWH(w * 0.10, h * 0.42, w * 0.80, h * 0.44);
     final bodyPaint = Paint()..color = _sweater;
     canvas.drawRRect(
       RRect.fromRectAndCorners(bodyRect,
-          topLeft: const Radius.circular(34),
-          topRight: const Radius.circular(34),
-          bottomLeft: const Radius.circular(18),
-          bottomRight: const Radius.circular(18)),
+                               topLeft: const Radius.circular(34),
+                               topRight: const Radius.circular(34),
+                               bottomLeft: const Radius.circular(18),
+                               bottomRight: const Radius.circular(18)),
       bodyPaint,
-    );
+      );
     // 스웨터 라인 장식.
     final linePaint = Paint()
       ..color = _sweaterShade
@@ -556,22 +556,22 @@ class _PersonPainter extends CustomPainter {
       Offset(w * 0.16, h * 0.62),
       Offset(w * 0.84, h * 0.62),
       linePaint,
-    );
+      );
 
     // 팔 (환영하듯 살짝 벌림).
     final armPaint = Paint()..color = _sweater;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * -0.02, h * 0.46, w * 0.20, h * 0.30),
-          const Radius.circular(14)),
+        Rect.fromLTWH(w * -0.02, h * 0.46, w * 0.20, h * 0.30),
+        const Radius.circular(14)),
       armPaint,
-    );
+      );
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * 0.82, h * 0.46, w * 0.20, h * 0.30),
-          const Radius.circular(14)),
+        Rect.fromLTWH(w * 0.82, h * 0.46, w * 0.20, h * 0.30),
+        const Radius.circular(14)),
       armPaint,
-    );
+      );
     final handPaint = Paint()..color = _skin;
     canvas.drawCircle(Offset(w * 0.06, h * 0.76), w * 0.08, handPaint);
     canvas.drawCircle(Offset(w * 0.94, h * 0.76), w * 0.08, handPaint);
@@ -580,10 +580,10 @@ class _PersonPainter extends CustomPainter {
     final neckPaint = Paint()..color = _skin;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * 0.42, h * 0.36, w * 0.16, h * 0.12),
-          const Radius.circular(6)),
+        Rect.fromLTWH(w * 0.42, h * 0.36, w * 0.16, h * 0.12),
+        const Radius.circular(6)),
       neckPaint,
-    );
+      );
 
     // 얼굴.
     final faceCenter = Offset(w * 0.5, h * 0.22);
@@ -599,27 +599,27 @@ class _PersonPainter extends CustomPainter {
       math.pi,
       true,
       hairPaint,
-    );
+      );
     final bangs = Path()
       ..moveTo(faceCenter.dx - faceRadius, faceCenter.dy - faceRadius * 0.15)
       ..quadraticBezierTo(
-        faceCenter.dx - faceRadius * 0.3,
-        faceCenter.dy - faceRadius * 0.95,
-        faceCenter.dx,
-        faceCenter.dy - faceRadius * 0.75,
+      faceCenter.dx - faceRadius * 0.3,
+      faceCenter.dy - faceRadius * 0.95,
+      faceCenter.dx,
+      faceCenter.dy - faceRadius * 0.75,
       )
       ..quadraticBezierTo(
-        faceCenter.dx + faceRadius * 0.4,
-        faceCenter.dy - faceRadius * 1.0,
-        faceCenter.dx + faceRadius,
-        faceCenter.dy - faceRadius * 0.15,
+      faceCenter.dx + faceRadius * 0.4,
+      faceCenter.dy - faceRadius * 1.0,
+      faceCenter.dx + faceRadius,
+      faceCenter.dy - faceRadius * 0.15,
       )
       ..lineTo(faceCenter.dx + faceRadius, faceCenter.dy - faceRadius * 0.5)
       ..quadraticBezierTo(
-        faceCenter.dx,
-        faceCenter.dy - faceRadius * 1.25,
-        faceCenter.dx - faceRadius,
-        faceCenter.dy - faceRadius * 0.5,
+      faceCenter.dx,
+      faceCenter.dy - faceRadius * 1.25,
+      faceCenter.dx - faceRadius,
+      faceCenter.dy - faceRadius * 0.5,
       )
       ..close();
     canvas.drawPath(bangs, hairPaint);
@@ -628,15 +628,15 @@ class _PersonPainter extends CustomPainter {
     final blushPaint = Paint()
       ..color = const Color(0xFFFF8A80).withValues(alpha: 0.45);
     canvas.drawCircle(
-        Offset(faceCenter.dx - faceRadius * 0.55,
-            faceCenter.dy + faceRadius * 0.15),
-        faceRadius * 0.16,
-        blushPaint);
+      Offset(faceCenter.dx - faceRadius * 0.55,
+             faceCenter.dy + faceRadius * 0.15),
+      faceRadius * 0.16,
+      blushPaint);
     canvas.drawCircle(
-        Offset(faceCenter.dx + faceRadius * 0.55,
-            faceCenter.dy + faceRadius * 0.15),
-        faceRadius * 0.16,
-        blushPaint);
+      Offset(faceCenter.dx + faceRadius * 0.55,
+             faceCenter.dy + faceRadius * 0.15),
+      faceRadius * 0.16,
+      blushPaint);
 
     // 눈 (깜빡임 지원).
     final eyePaint = Paint()..color = const Color(0xFF3E2A1A);
@@ -648,21 +648,21 @@ class _PersonPainter extends CustomPainter {
         ..strokeWidth = 2.4
         ..strokeCap = StrokeCap.round;
       canvas.drawLine(Offset(faceCenter.dx - eyeDx - 5, eyeY),
-          Offset(faceCenter.dx - eyeDx + 5, eyeY), blinkPaint);
+                      Offset(faceCenter.dx - eyeDx + 5, eyeY), blinkPaint);
       canvas.drawLine(Offset(faceCenter.dx + eyeDx - 5, eyeY),
-          Offset(faceCenter.dx + eyeDx + 5, eyeY), blinkPaint);
+                      Offset(faceCenter.dx + eyeDx + 5, eyeY), blinkPaint);
     } else {
       canvas.drawCircle(
-          Offset(faceCenter.dx - eyeDx, eyeY), faceRadius * 0.11, eyePaint);
+        Offset(faceCenter.dx - eyeDx, eyeY), faceRadius * 0.11, eyePaint);
       canvas.drawCircle(
-          Offset(faceCenter.dx + eyeDx, eyeY), faceRadius * 0.11, eyePaint);
+        Offset(faceCenter.dx + eyeDx, eyeY), faceRadius * 0.11, eyePaint);
       final highlight = Paint()..color = Colors.white;
       canvas.drawCircle(
-          Offset(faceCenter.dx - eyeDx + 2, eyeY - 2), faceRadius * 0.04,
-          highlight);
+        Offset(faceCenter.dx - eyeDx + 2, eyeY - 2), faceRadius * 0.04,
+        highlight);
       canvas.drawCircle(
-          Offset(faceCenter.dx + eyeDx + 2, eyeY - 2), faceRadius * 0.04,
-          highlight);
+        Offset(faceCenter.dx + eyeDx + 2, eyeY - 2), faceRadius * 0.04,
+        highlight);
     }
 
     // 웃는 입.
@@ -673,19 +673,19 @@ class _PersonPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final mouthPath = Path()
       ..moveTo(
-          faceCenter.dx - faceRadius * 0.22, faceCenter.dy + faceRadius * 0.38)
+      faceCenter.dx - faceRadius * 0.22, faceCenter.dy + faceRadius * 0.38)
       ..quadraticBezierTo(
-        faceCenter.dx,
-        faceCenter.dy + faceRadius * 0.58,
-        faceCenter.dx + faceRadius * 0.22,
-        faceCenter.dy + faceRadius * 0.38,
+      faceCenter.dx,
+      faceCenter.dy + faceRadius * 0.58,
+      faceCenter.dx + faceRadius * 0.22,
+      faceCenter.dy + faceRadius * 0.38,
       );
     canvas.drawPath(mouthPath, mouthPaint);
   }
 
   @override
   bool shouldRepaint(covariant _PersonPainter oldDelegate) =>
-      oldDelegate.blink != blink;
+    oldDelegate.blink != blink;
 }
 
 /// 강아지 캐릭터. 달릴 때는 다리가 교차로 움직이고 꼬리가 살랑거리며,
@@ -705,9 +705,9 @@ class _DogPainter extends CustomPainter {
   final double tailPhase;
   final bool excited;
 
-  static const _fur = Color(0xFFE2A765);
-  static const _furShade = Color(0xFFC98A49);
-  static const _cream = Color(0xFFFFF3E0);
+  static const _fur = Color(0xFFD9915A);
+  static const _furShade = Color(0xFFB9703E);
+  static const _cream = Color(0xFFFFFAF0);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -728,12 +728,12 @@ class _DogPainter extends CustomPainter {
     final tailEnd = Offset(
       tailBase.dx + math.cos(-0.9 + tailAngle) * w * 0.34,
       tailBase.dy - math.sin(1.2 + tailAngle) * h * 0.55,
-    );
+      );
     final tailControl = Offset(tailBase.dx + w * 0.18, tailBase.dy - h * 0.25);
     final tailPath = Path()
       ..moveTo(tailBase.dx, tailBase.dy)
       ..quadraticBezierTo(
-          tailControl.dx, tailControl.dy, tailEnd.dx, tailEnd.dy);
+      tailControl.dx, tailControl.dy, tailEnd.dx, tailEnd.dy);
     canvas.drawPath(tailPath, tailPaint);
 
     // --- 다리 (달릴 때 교차, 도착 후엔 짧게 모음) ---
@@ -747,16 +747,16 @@ class _DogPainter extends CustomPainter {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(frontLegX + legSwing, h * 0.62, legW, legH),
-          const Radius.circular(5)),
+        Rect.fromLTWH(frontLegX + legSwing, h * 0.62, legW, legH),
+        const Radius.circular(5)),
       legPaint,
-    );
+      );
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(backLegX + legSwing2, h * 0.62, legW, legH),
-          const Radius.circular(5)),
+        Rect.fromLTWH(backLegX + legSwing2, h * 0.62, legW, legH),
+        const Radius.circular(5)),
       legPaint,
-    );
+      );
 
     // --- 몸통 ---
     final bodyPaint = Paint()..color = _fur;
@@ -765,10 +765,10 @@ class _DogPainter extends CustomPainter {
     final bellyPaint = Paint()..color = _cream;
     canvas.drawOval(
       Rect.fromLTWH(bodyRect.left + bodyRect.width * 0.18,
-          bodyRect.top + bodyRect.height * 0.42, bodyRect.width * 0.55,
-          bodyRect.height * 0.5),
+                    bodyRect.top + bodyRect.height * 0.42, bodyRect.width * 0.55,
+                    bodyRect.height * 0.5),
       bellyPaint,
-    );
+      );
 
     // --- 머리 ---
     final headCenter = Offset(w * 0.22, h * 0.26);
@@ -785,40 +785,40 @@ class _DogPainter extends CustomPainter {
     final muzzlePaint = Paint()..color = _cream;
     canvas.drawOval(
       Rect.fromCenter(
-          center:
-              Offset(headCenter.dx - headR * 0.55, headCenter.dy + headR * 0.28),
-          width: headR * 1.05,
-          height: headR * 0.62),
+        center:
+        Offset(headCenter.dx - headR * 0.55, headCenter.dy + headR * 0.28),
+        width: headR * 1.05,
+        height: headR * 0.62),
       muzzlePaint,
-    );
+      );
 
     // 코 (고양이의 분홍 삼각코 대신, 둥글고 까만 강아지 코).
     final nosePaint = Paint()..color = const Color(0xFF2D1B0E);
     canvas.drawOval(
       Rect.fromCenter(
-          center:
-              Offset(headCenter.dx - headR * 0.95, headCenter.dy + headR * 0.22),
-          width: headR * 0.26,
-          height: headR * 0.20),
+        center:
+        Offset(headCenter.dx - headR * 0.95, headCenter.dy + headR * 0.22),
+        width: headR * 0.26,
+        height: headR * 0.20),
       nosePaint,
-    );
+      );
 
     // 눈 (달릴 땐 기분 좋게 감은 호, 도착하면 반짝이는 동그란 눈).
     final eyeY = headCenter.dy - headR * 0.05;
     if (excited) {
       final eyePaint = Paint()..color = const Color(0xFF2D1B0E);
       canvas.drawCircle(
-          Offset(headCenter.dx - headR * 0.58, eyeY), headR * 0.16, eyePaint);
+        Offset(headCenter.dx - headR * 0.58, eyeY), headR * 0.16, eyePaint);
       canvas.drawCircle(
-          Offset(headCenter.dx - headR * 0.08, eyeY - headR * 0.1),
-          headR * 0.16, eyePaint);
+        Offset(headCenter.dx - headR * 0.08, eyeY - headR * 0.1),
+        headR * 0.16, eyePaint);
       final sparkle = Paint()..color = Colors.white;
       canvas.drawCircle(
-          Offset(headCenter.dx - headR * 0.58 + 1.5, eyeY - 1.5),
-          headR * 0.05, sparkle);
+        Offset(headCenter.dx - headR * 0.58 + 1.5, eyeY - 1.5),
+        headR * 0.05, sparkle);
       canvas.drawCircle(
-          Offset(headCenter.dx - headR * 0.08 + 1.5, eyeY - headR * 0.1 - 1.5),
-          headR * 0.05, sparkle);
+        Offset(headCenter.dx - headR * 0.08 + 1.5, eyeY - headR * 0.1 - 1.5),
+        headR * 0.05, sparkle);
     } else {
       final happyPaint = Paint()
         ..color = const Color(0xFF2D1B0E)
@@ -826,23 +826,23 @@ class _DogPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
       canvas.drawArc(
-          Rect.fromCenter(
-              center: Offset(headCenter.dx - headR * 0.58, eyeY),
-              width: headR * 0.3,
-              height: headR * 0.3),
-          0.15,
-          2.8,
-          false,
-          happyPaint);
+        Rect.fromCenter(
+          center: Offset(headCenter.dx - headR * 0.58, eyeY),
+          width: headR * 0.3,
+          height: headR * 0.3),
+        0.15,
+        2.8,
+        false,
+        happyPaint);
       canvas.drawArc(
-          Rect.fromCenter(
-              center: Offset(headCenter.dx - headR * 0.08, eyeY - headR * 0.1),
-              width: headR * 0.3,
-              height: headR * 0.3),
-          0.15,
-          2.8,
-          false,
-          happyPaint);
+        Rect.fromCenter(
+          center: Offset(headCenter.dx - headR * 0.08, eyeY - headR * 0.1),
+          width: headR * 0.3,
+          height: headR * 0.3),
+        0.15,
+        2.8,
+        false,
+        happyPaint);
     }
 
     // 살짝 내민 혀 (헥헥거리는 듯한 강아지다운 디테일).
@@ -851,18 +851,18 @@ class _DogPainter extends CustomPainter {
       RRect.fromRectAndRadius(
         Rect.fromCenter(
           center:
-              Offset(headCenter.dx - headR * 0.60, headCenter.dy + headR * 0.55),
+          Offset(headCenter.dx - headR * 0.60, headCenter.dy + headR * 0.55),
           width: headR * 0.20,
           height: headR * 0.32,
-        ),
+          ),
         const Radius.circular(6),
-      ),
+        ),
       tonguePaint,
-    );
+      );
   }
 
   void _drawEar(
-      Canvas canvas, Offset headCenter, double headR, int side, double flap) {
+    Canvas canvas, Offset headCenter, double headR, int side, double flap) {
     // 삼각형으로 쫑긋 선 고양이 귀 대신, 옆으로 축 늘어진 둥근 강아지 귀.
     final outerPaint = Paint()..color = _furShade;
     final innerPaint = Paint()..color = const Color(0xFFFFCBA4);
@@ -871,7 +871,7 @@ class _DogPainter extends CustomPainter {
     final earCenter = Offset(
       attachX + side * headR * 0.04,
       attachY + headR * (0.55 + flap),
-    );
+      );
     final earWidth = headR * 0.46;
     final earHeight = headR * (0.95 + flap * 0.6);
 
@@ -882,12 +882,12 @@ class _DogPainter extends CustomPainter {
     canvas.drawOval(
       Rect.fromCenter(center: earCenter, width: earWidth, height: earHeight),
       outerPaint,
-    );
+      );
     canvas.drawOval(
       Rect.fromCenter(
-          center: earCenter, width: earWidth * 0.55, height: earHeight * 0.6),
+        center: earCenter, width: earWidth * 0.55, height: earHeight * 0.6),
       innerPaint,
-    );
+      );
     canvas.restore();
   }
 

@@ -58,7 +58,7 @@ class DogTranslatorApp extends StatelessWidget {
     return MaterialApp(
       title: '멍멍이톡',
       theme: ThemeData(
-        colorSchemeSeed: const Color(0xFFFFB648),
+        colorSchemeSeed: const Color(0xFFFF9A76),
         useMaterial3: true,
       ),
       home: const IntroScreen(),
@@ -564,9 +564,9 @@ class _ChatHomePageState extends State<ChatHomePage> {
         width: 150,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF6E3),
+          color: const Color(0xFFFFF6E9),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFFFD9A0)),
+          border: Border.all(color: const Color(0xFFFFCDA8)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -590,7 +590,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFE9D2),
+      backgroundColor: const Color(0xFFFFE3C9),
       appBar: _buildChatAppBar(context),
       body: SafeArea(
         child: Column(
@@ -637,7 +637,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFFFB648), Color(0xFFFF8B6B)],
+            colors: [Color(0xFFFF9A76), Color(0xFFFFD36B)],
           ),
         ),
       ),
@@ -794,7 +794,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFF8B6B),
+                color: const Color(0xFFFF9A76),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(4),
@@ -988,7 +988,7 @@ class _ChatHomePageState extends State<ChatHomePage> {
               child: CircleAvatar(
                 radius: 24,
                 backgroundColor:
-                    _isListening ? Colors.redAccent : const Color(0xFFFFB648),
+                    _isListening ? Colors.redAccent : const Color(0xFFFFD36B),
                 child: Icon(
                   _isListening ? Icons.stop : Icons.mic,
                   color: Colors.white,

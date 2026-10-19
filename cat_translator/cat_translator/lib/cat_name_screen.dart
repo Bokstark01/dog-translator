@@ -5,8 +5,8 @@ import 'main.dart';
 /// 인트로 애니메이션 다음에 보여주는 화면.
 /// 사용자에게 강아지 이름을 입력받아 채팅방 전체에서 그 이름으로 부른다.
 ///
-/// 색상/톤은 "시안 A · 선샤인 허니" 디자인 시안을 따른다.
-/// 메인 허니옐로우(#FFB648)·포인트 코랄(#FF8B6B)·크림 배경(#FFF6E3→#FFE9D2).
+/// 색상/톤은 "피치 선셋" 디자인 시안을 따른다.
+/// 메인 코랄(#FF9A76)·포인트 골드(#FFD36B)·크림 배경(#FFF6E9→#FFE3C9).
 class DogNameScreen extends StatefulWidget {
   const DogNameScreen({super.key});
 
@@ -40,7 +40,7 @@ class _DogNameScreenState extends State<DogNameScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFFFF6E3), Color(0xFFFFE9D2)],
+            colors: [Color(0xFFFFF6E9), Color(0xFFFFE3C9)],
           ),
         ),
         child: SafeArea(
@@ -58,11 +58,11 @@ class _DogNameScreenState extends State<DogNameScreen> {
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Color(0xFFFFD9A0), Color(0xFFFFC988)],
+                      colors: [Color(0xFFFFCDA8), Color(0xFFFFE1A0)],
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFB648).withValues(alpha: 0.35),
+                        color: const Color(0xFFFFD36B).withValues(alpha: 0.35),
                         blurRadius: 18,
                         offset: const Offset(0, 8),
                       ),
@@ -127,7 +127,7 @@ class _DogNameScreenState extends State<DogNameScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                         borderSide: const BorderSide(
-                          color: Color(0xFFFFB648),
+                          color: Color(0xFFFFD36B),
                           width: 1.6,
                         ),
                       ),
@@ -148,12 +148,12 @@ class _DogNameScreenState extends State<DogNameScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(18),
                           gradient: const LinearGradient(
-                            colors: [Color(0xFFFFB648), Color(0xFFFF8B6B)],
+                            colors: [Color(0xFFFF9A76), Color(0xFFFFD36B)],
                           ),
                           boxShadow: [
                             BoxShadow(
                               color:
-                                  const Color(0xFFFF8B6B).withValues(alpha: 0.35),
+                                  const Color(0xFFFFD36B).withValues(alpha: 0.35),
                               blurRadius: 14,
                               offset: const Offset(0, 6),
                             ),
